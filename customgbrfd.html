@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Garage Brasil</title>
+    <style>
+      body {
+        background-color: #454545;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      #cimadiv {
+        background-color: #12395d;
+        height: 15vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      #bpsq {
+        background-color: #fff;
+        height: 38px;
+        width: 30%;
+        border-radius: 9px;
+        border: none;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+
+      #logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #logoimg {
+        height: 50px;
+        width: 50px;
+        border-radius: 5px;
+      }
+
+      #logo h1 {
+        color: white;
+        font-size: 20px;
+        margin: 0;
+      }
+
+      #cadstrbtn{
+        font-size: 28px;
+        font-weight: bold;
+        width: 90px;
+        height: 90px;
+      }
+      #reticencias {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      #carrinho {
+        background-color: transparent;
+        margin-top:  0px;        
+        margin-left:  35px;
+        margin-right: 0;
+        margin-bottom: 0px;
+      }
+
+
+      #cadstrbtn {
+        padding: 4px;
+        background-color: transparent;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+      }
+      #carrinhoimg{
+        height: 80px;
+        width: 100px;
+      }
+
+      #reticencias {
+        color: white;
+        font-size: 68px;
+        display: grid;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 50px;
+      }
+
+      #produtos {
+        background-color: #ffffff75;
+        width: 90%;
+        margin: 20px auto;
+        border-radius: 8px;
+        padding: 20px;
+        display: grid;
+        gap: 20px;
+      }
+
+      #prdtsrll {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .produto {
+        width: 200px;
+        height: 250px;
+        background-color: #dcdcdc;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+      }
+
+      .produto:hover {
+        transform: scale(1.05);
+        background-color: #b0b0b0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      img {
+        max-width: 77%;
+        max-height: 77%;
+      }
+      #miolo{
+        height: 30px;
+        width: 800px;
+        margin: 10px
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: #ffffff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 5px;
+        width: 80%;
+        max-width: 400px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .login-form {
+        display: flex;
+        flex-direction: column;
+      }
+      .login-form input {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cimadiv">
+      <div id="logo">
+        <img id="logoimg" src="./logo.jpg" alt="Logo" />
+        <h1>Custom Garage</h1>
+      </div>
+      <div id="miolo"></div>
+      <div id="cadstrbtn">+</div>
+      <div id="carrinho">
+        <img id="carrinhoimg" src="./carrinhoimg.png" alt="Carrinho" />
+      </div>
+      <div id="reticencias">...</div>
+    </div>
+
+    <div id="produtos">
+      <div id="prdtsrll">
+      </div>
+    </div>
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login</h2>
+        <form class="login-form">
+          <input type="text" id="nomecln" placeholder="Usuario"" />
+          <input type="password" id="senhacln" placeholder="Senha" />
+          <input type="submit" id="envcliente" value="cadastrar-se" />
+          <input type="submit" id="logincln" value="logar" />          
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+    <script>
+      // variaveis do html
+      const reticencias = document.getElementById("reticencias");
+      const modallgn = document.getElementById("loginModal");
+      const span = document.querySelector(".close");
+      const carrinhoimg = document.getElementById("carrinhoimg");
+      const envcliente = document.getElementById("envcliente")
+      const logincln = document.getElementById("cadstrbtn");
+
+
+      carrinhoimg.addEventListener("click", () => {
+        window.open("./carrinhoclnt.html");
+      });
+
+      reticencias.addEventListener("click", () => {
+        modallgn.style.display = "flex";
+      });
+
+      span.addEventListener("click", () => {
+        modallgn.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target === modallgn) {
+          modallgn.style.display = "none";
+        }
+      });
+      // envia os dados do cliente pro banco de dados
+      envcliente.addEventListener("click", async (event) =>{
+        event.preventDefault()
+        const nomecln = document.querySelector('#nomecln').value;
+        const senhacln = document.querySelector('#senhacln').value;
+        const resposta = await fetch("http://localhost:3000/cliente");
+        const clientes = await resposta.json();
+        console.log (clientes)
+        if (!nomecln || !senhacln) {
+        window.alert("Por favor, preencha todos os campos!");
+        return;}
+        if (clientes.some(cliente => cliente.nome === nomecln)) {
+        window.alert("Cliente já cadastrado!");
+        return;
+        } 
+        try{
+        const response = await fetch('http://localhost:3000/cliente', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nomecln,
+                    senha: senhacln
+                })
+            })
+           
+            if (response.ok) {
+              const data = await response.json()
+              window.alert('usuario cadastrado')
+            }
+            else {
+              const error = await response.json()
+              window.alert('erro: ' + error.erro)
+            } 
+        } catch (error) {
+              console.error('erro no cadastro: ', error)
+              window.alert('erro ao tentar cadastrar usuario')
+            }
+          });
+          logincln.addEventListener('click', async (event) =>{
+            const nomecln = document.querySelector('#nomecln').value;
+            const senhacln = document.querySelector('#senhacln').value;
+
+          if (!nomecln || !senhacln) {
+            window.alert('Por favor, preencha todos os campos!');
+            return;
+          }
+
+            if (clientes.some(cliente => cliente.nome === nomecln)){
+              try{
+                const response = await fetch('http://localhost:3000/senhacln', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    senha: senhacln
+                })
+            })
+           
+            if (response.ok) {
+              const data = await response.json()
+              console.log('usuario chegou ao back end')
+            }
+            else {
+              const error = await response.json()
+              console.log('erro: ' + error.erro)
+            } 
+            } catch (error) {
+              console.error('erro no envio: ', error)
+              console.log('erro ao tentar enviar')
+            }
+          }
+          });
+            
+      const prdtsrll = document.getElementById("prdtsrll");
+      // cria os produtos em divs no html
+      let contador = 1;
+
+      async function carregarProdutos() {
+        try {
+          // le o json criado pelo import.js
+          const resposta = await fetch("http://localhost:3000/produtos");
+          const produtos = await resposta.json();
+          prdtsrll.innerHTML = ''; 
+
+          produtos.forEach((produto) => {
+            const produtoDiv = document.createElement("div");
+            produtoDiv.classList.add("produto");
+            produtoDiv.id = `produto-${contador}`;
+            contador++;
+
+            const produtoNome = document.createElement("h3");
+            produtoNome.textContent = produto.nome;
+
+            const produtoimagem = document.createElement("img");
+            produtoimagem.src = produto.imagem;
+            produtoimagem.alt = produto.nome;  
+            
+            const produtoPreco = document.createElement("p");
+            produtoPreco.textContent = `R$ ${produto.preco.toFixed(2)}`;
+
+            produtoDiv.appendChild(produtoNome);
+            produtoDiv.appendChild(produtoimagem);
+            produtoDiv.appendChild(produtoPreco);
+
+            prdtsrll.appendChild(produtoDiv);
+
+            produtoDiv.addEventListener("click", () => {
+              window.open(`./compra.html?id=${produto.id}`);
+            });
+          });
+
+        } catch (erro) {
+          window.alert("Erro ao carregar os produtos:", erro);
+        }
+      }
+
+      cadstrbtn.addEventListener('click', () => {
+        window.open('./cadastroprd.html');
+      });
+
+      carregarProdutos();
+    </script> 
+    </body>
+</html>

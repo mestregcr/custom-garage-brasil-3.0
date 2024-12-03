@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho Custom Garage Brasil</title>
+    <style>
+        header {
+            display: flex;
+            padding: 0px 30px;
+            flex-direction: row;
+            background-color: rgb(11, 55, 85);
+            position: relative;
+        }
+        #logoimg{
+        margin:7px;
+        height: 136px;
+        width: 150px;
+        border: 3px solid rgb(19, 18, 18);
+        }
+
+        body {
+            background-color: rgb(44, 44, 44);
+        }
+        #logo {
+            background-color: rgb(73, 72, 72);
+            padding: 10px;
+        }
+        h1 {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: white;
+        }
+        .product {
+            display: flex;
+            flex-direction: column; 
+            width: 100%; 
+            margin-bottom: 20px;
+            color: rgb(233, 226, 226);
+        }
+        .product div {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: rgb(53, 53, 53);
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .product img {
+            max-width: 100px;
+        }
+        fieldset {
+            background-color: rgb(53, 53, 53);
+            border-radius: 9px;
+            padding: 15px 20px;
+            margin: 15px;
+        }
+        #totalcarr {
+            display: flex;
+            height: 60px;
+            width: 150px;
+            border: 3px solid rgb(233, 226, 226);
+            padding: 18px;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            font-size: 14px;
+            padding: 5px 10px;
+            border: none;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+            <img id="logoimg" src="./logo.jpg">
+    </header>
+
+    <br>
+    <div id="totalcarr"><h1>TOTAL:</h1></div>
+    <fieldset>
+        <div class="product"></div>
+    </fieldset>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const resposta = await fetch('http://localhost:3000/carrinho');
+                const produtos = await resposta.json();
+
+                const container = document.querySelector('.product');
+                container.innerHTML = ''; 
+
+                let total = 0;
+
+                produtos.forEach(produto => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <div>${produto.nome}</div>
+                        <div>R$ ${produto.preco.toFixed(2)}</div>
+                        <button class="btn-remove" data-id="${produto.id}">Remover</button>
+                    `;
+                    container.appendChild(div);
+                    total += produto.preco * produto.quantidade;
+                });
+
+                document.getElementById('totalcarr').innerHTML = `<h1>TOTAL: R$ ${total.toFixed(2)}</h1>`;
+
+                // Adiciona eventos aos botões "Remover"
+                document.querySelectorAll('.btn-remove').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const productId = event.target.getAttribute('data-id');
+                        try {
+                            const resposta = await fetch(`http://localhost:3000/carrinho/${productId}`, {
+                                method: 'DELETE'
+                            });
+
+                            if (resposta.ok) {
+                                // Remove a div do produto do DOM
+                                event.target.parentElement.remove();
+
+                                // Recalcula o total
+                                const produtoRemovido = produtos.find(p => p.id == productId);
+                                total -= produtoRemovido.preco * produtoRemovido.quantidade;
+                                document.getElementById('totalcarr').innerHTML = `<h1>TOTAL: R$ ${total.toFixed(2)}</h1>`;
+                            } else {
+                                alert('Erro ao remover o produto do carrinho.');
+                            }
+                        } catch (error) {
+                            console.error('Erro ao remover o produto:', error);
+                            alert('Erro ao processar a solicitação.');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Erro ao carregar o carrinho:', error);
+                alert('Erro ao carregar os produtos do carrinho.');
+            }
+        });
+    </script>
+</body>
+</html>
